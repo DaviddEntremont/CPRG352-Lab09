@@ -40,7 +40,7 @@ public class UserServlet extends HttpServlet {
                 Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-        }else if(action != null && action.equals("delete")){
+        }   else if(action != null && action.equals("delete")){
             
             try {
                 char ch = '+';
@@ -68,6 +68,7 @@ public class UserServlet extends HttpServlet {
         }
         
         getServletContext().getRequestDispatcher("/WEB-INF/users.jsp").forward(request, response);
+        return;
     }
 
     @Override
@@ -86,22 +87,34 @@ public class UserServlet extends HttpServlet {
             switch(action){
                 case "add":
                     String email = request.getParameter("email");
+                    String active = request.getParameter("active");
+                    Boolean isActive = false;
+                    if (active.equals("true")) {
+                        isActive = true;
+                    }
                     String fname = request.getParameter("fname");
                     String lname = request.getParameter("lname");
                     String password = request.getParameter("password");
                     int role = Integer.parseInt(request.getParameter("role"));
                     if(email.length() > 0 && fname.length() > 0 && lname.length() > 0 && password.length() > 0 && role > 0){
-                    us.insert(email, 1, fname, lname, password, role);
+                    Role newRole = rs.get(role);
+                    us.insert(email, isActive, fname, lname, password, newRole);
                     }
                     break;
                 case "save":
                     String editEmail = request.getParameter("editEmail");
+                    String editActive = request.getParameter("editActive");
+                    Boolean editIsActive = false;
+                    if (editActive.equals("true")) {
+                        editIsActive = true;
+                    }
                     String editFname = request.getParameter("editFname");
                     String editLname = request.getParameter("editLname");
                     String editPassword = request.getParameter("editPassword");
                     int editRole = Integer.parseInt(request.getParameter("editRole"));
                     if(editEmail.length() > 0 && editFname.length() > 0 && editLname.length() > 0 && editPassword.length() > 0 && editRole > 0){
-                    us.update(editEmail, editRole, editFname, editLname, editPassword, editRole);
+                    Role newRole = rs.get(editRole);
+                    us.update(editEmail, editIsActive, editFname, editLname, editPassword, newRole);
                     }
                     break;     
             }

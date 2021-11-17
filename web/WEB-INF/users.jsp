@@ -1,4 +1,3 @@
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
@@ -20,12 +19,13 @@
             <td>
                 <form action="user" method="post">
                     <input type="text" name="email" placeholder="Email" value="${email}"><br>
-                    <input type="text" name="fname" placeholder="Firstname" value="${fname}"><br>
-                    <input type="text" name="lname" placeholder="Lastname" value="${lname}"><br>
+                    Active: <input type="checkbox" name="active" placeholder="Active" value="true"><br>
+                    <input type="text" name="fname" placeholder="Firstname" value="${firstName}"><br>
+                    <input type="text" name="lname" placeholder="Lastname" value="${lastName}"><br>
                     <input type="text" name="password" placeholder="Password" value="${password}"><br>
                     <select name="role">
                         <c:forEach items="${roles}" var="role">
-                            <option value ="${role.id}">${role.name}</option>
+                            <option value ="${role.roleId}">${role.roleName}</option>
                         </c:forEach>
                     </select><br>
                     <input type="hidden" name="action" value="add">
@@ -47,28 +47,28 @@
                     <c:forEach items="${users}" var="user">
                         <tr>
                             <td>${user.email}</td>
-                            <td>${user.fname}</td>
-                            <td>${user.lname}</td>
+                            <td>${user.firstName}</td>
+                            <td>${user.lastName}</td>
                             
                             <c:forEach items="${roles}" var="role">
-                                <c:if test = "${user.role eq role.id}">
-                                    <td>${role.name}</td>
+                                <c:if test = "${user.role.roleId eq role.roleId}">
+                                    <td>${role.roleName}</td>
                                 </c:if>
                             </c:forEach>
                                     
-                            <c:if test="${user.active eq 1}">
+                            <c:if test="${user.active}">
                                 <td>
                                     <input type="checkbox" disabled checked>
                                 </td>
                             </c:if>
-                            <c:if test="${user.active != 1}">
+                            <c:if test="${!user.active}">
                                 <td>
                                     <input type="checkbox" disabled>
                                 </td>
                             </c:if>
-                            <td><a href="user?action=view&amp;email=${user.email}"><i class="fas fa-user-edit"></i></a><br></td>
+                            <td><a href="user?action=view&amp;email=${user.email}">Edit</a><br></td>
                             <td>
-                                <a href="user?action=delete&amp;email=${user.email}"><i class="fas fa-user-times"></i></a><br></td>
+                                <a href="user?action=delete&amp;email=${user.email}">Delete</a><br></td>
                         </tr>
                     </c:forEach>
                 </table>
@@ -77,17 +77,18 @@
                 <form action="user" method="post">
                     <c:if test="${editUser != null}">
                         <input type="hidden" name="editEmail" value="${editUser.email}"><br>
-                        <input type="text" name="editFname" value="${editUser.fname}"><br>
-                        <input type="text" name="editLname" value="${editUser.lname}"><br>
+                        <label>Active User:</label> <input type="checkbox" name="editActive" value="true" <c:if test="${editUser.active}">checked</c:if>><br>
+                        <input type="text" name="editFname" value="${editUser.firstName}"><br>
+                        <input type="text" name="editLname" value="${editUser.lastName}"><br>
                         <input type="text" name="editPassword" value="${editUser.password}"><br>
                         <select name="editRole">
                             <c:forEach items="${roles}" var="role">
-                                <c:if test = "${role.id eq editUser.role}">
-                                     <option selected value ="${role.id}">${role.name}</option>
+                                <c:if test = "${role.roleId eq editUser.role.roleId}">
+                                     <option selected value ="${role.roleId}">${role.roleName}</option>
                                 </c:if>
                                      
-                                <c:if test = "${role.id ne editUser.role}">
-                                    <option value ="${role.id}">${role.name}</option>
+                                <c:if test = "${role.roleId ne editUser.role.roleId}">
+                                    <option value ="${role.roleId}">${role.roleName}</option>
                                 </c:if>
                                     
                             </c:forEach>
